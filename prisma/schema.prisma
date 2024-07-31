@@ -1,0 +1,96 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  TECHNICIAN
+  CUSTOMER_SUPPORT
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String
+  password  String
+  role      Role // Enum para definir roles
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  orders    Order[]
+}
+
+model Customer {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  phone     String
+  address   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  orders    Order[]
+}
+
+model Product {
+  id               Int               @id @default(autoincrement())
+  name             String
+  model            String
+  description      String
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  productInstances ProductInstance[]
+  maintenances     Maintenance[]
+}
+
+model ProductInstance {
+  id           Int           @id @default(autoincrement())
+  serialNumber String        @unique
+  productId    Int
+  product      Product       @relation(fields: [productId], references: [id])
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  orderItems   OrderItem[]
+  maintenances Maintenance[]
+}
+
+model Order {
+  id           Int         @id @default(autoincrement())
+  date         DateTime    @default(now())
+  customerId   Int
+  customer     Customer    @relation(fields: [customerId], references: [id])
+  userId       Int
+  user         User        @relation(fields: [userId], references: [id])
+  observations String?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  orderItems   OrderItem[]
+}
+
+model OrderItem {
+  id                Int             @id @default(autoincrement())
+  orderId           Int
+  order             Order           @relation(fields: [orderId], references: [id])
+  productInstanceId Int
+  productInstance   ProductInstance @relation(fields: [productInstanceId], references: [id])
+  observations      String?
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  @@unique([orderId, productInstanceId])
+}
+
+model Maintenance {
+  id                Int             @id @default(autoincrement())
+  productInstanceId Int
+  productInstance   ProductInstance @relation(fields: [productInstanceId], references: [id])
+  date              DateTime        @default(now())
+  details           String
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  Product           Product?        @relation(fields: [productId], references: [id])
+  productId         Int?
+}
