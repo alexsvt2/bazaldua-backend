@@ -5,9 +5,29 @@ import { CustomersModule } from './customers/customers.module';
 import { UsersModule } from './users/users.module';
 import { ProductsModule } from './products/products.module';
 import { OrdersModule } from './orders/orders.module';
+import { PrismaModule } from 'nestjs-prisma';
 
 @Module({
-  imports: [CustomersModule, UsersModule, ProductsModule, OrdersModule],
+  imports: [
+    PrismaModule.forRoot({
+      isGlobal: true,
+      prismaServiceOptions: {
+        prismaOptions: {
+          log: [
+            {
+              emit: 'event',
+              level: 'query',
+            },
+          ],
+        },
+        explicitConnect: true,
+      },
+    }),
+    CustomersModule,
+    UsersModule,
+    ProductsModule,
+    OrdersModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
