@@ -17,6 +17,7 @@ model User {
   id        Int      @id @default(autoincrement())
   email     String   @unique
   name      String
+  isActive  Boolean  @default(true)
   password  String
   role      Role // Enum para definir roles
   createdAt DateTime @default(now())
@@ -59,12 +60,12 @@ model ProductInstance {
 
 model Order {
   id           Int         @id @default(autoincrement())
-  date         DateTime    @default(now())
   customerId   Int
+  observations String?
   customer     Customer    @relation(fields: [customerId], references: [id])
   userId       Int
   user         User        @relation(fields: [userId], references: [id])
-  observations String?
+  date         DateTime    @default(now())
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
   orderItems   OrderItem[]

@@ -39,12 +39,12 @@ export class UsersService {
   }
 
   remove(id: number) {
-    const deletedUser = this.prisma.user.delete({
+    return this.prisma.user.delete({
       where: {
         id,
       },
     });
-
-    return deletedUser;
   }
+
+  // TODO: Add Change User Status Should Receive a Boolean and the UserId
 }
