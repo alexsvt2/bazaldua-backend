@@ -12,4 +12,10 @@ export class CreateCustomerDto implements Prisma.CustomerCreateInput {
 
   @IsString()
   phone: string;
+
+  userId: string;
+  createdAt?: string | Date;
+  updatedAt?: string | Date;
+  orders?: Prisma.OrderCreateNestedManyWithoutCustomerInput;
+  customerProducts?: Prisma.CustomerProductCreateNestedManyWithoutCustomerInput;
 }

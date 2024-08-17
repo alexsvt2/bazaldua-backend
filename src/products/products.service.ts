@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { PrismaService } from 'nestjs-prisma';
+// import { CreateCustomerProductDto } from './customer-products/dto/create-customer-product.dto';
+// import { CreateCustomerProductDto } from './dto/create-customer-product';
 
 @Injectable()
 export class ProductsService {
@@ -39,12 +41,10 @@ export class ProductsService {
   }
 
   remove(id: number) {
-    const deletedProduct = this.prismaService.product.delete({
+    return this.prismaService.product.delete({
       where: {
         id,
       },
     });
-
-    return deletedProduct;
   }
 }

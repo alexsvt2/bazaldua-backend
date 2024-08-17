@@ -13,85 +13,107 @@ enum Role {
   CUSTOMER_SUPPORT
 }
 
+enum ServiceType {
+  PREVENTIVE
+  TRAINING
+  DIAGNOSTIC
+  CORRECTIVE
+  RELOCATION
+  UPDATE
+  PRE_INSTALLATION
+  REPLACEMENT_PARTS
+  OTHER
+  INSTALL
+}
+
+enum ReportType {
+  WARRANTY
+  CONTRACT
+  NO_CHARGE
+  INVOICABLE
+}
+
+enum OrderStatus {
+  PENDING
+  IN_PROGRESS
+  DELIVERED
+  CANCELED
+}
+
 model User {
   id        Int      @id @default(autoincrement())
   email     String   @unique
   name      String
-  isActive  Boolean  @default(true)
   password  String
-  role      Role // Enum para definir roles
+  role      Role
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   orders    Order[]
 }
 
 model Customer {
-  id        Int      @id @default(autoincrement())
-  name      String
-  email     String   @unique
-  phone     String
-  address   String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  orders    Order[]
+  id               Int               @id @default(autoincrement())
+  name             String
+  userId           String // Which user registered the customer
+  email            String            @unique
+  phone            String
+  address          String
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  orders           Order[]
+  customerProducts CustomerProduct[]
 }
 
 model Product {
   id               Int               @id @default(autoincrement())
-  name             String
-  model            String
+  name             String // Equipo- Nombre
+  brand            String // Marca
+  model            String // Axio Lab A1
   description      String
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @updatedAt
-  productInstances ProductInstance[]
-  maintenances     Maintenance[]
+  customerProducts CustomerProduct[]
 }
 
-model ProductInstance {
-  id           Int           @id @default(autoincrement())
-  serialNumber String        @unique
-  productId    Int
-  product      Product       @relation(fields: [productId], references: [id])
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-  orderItems   OrderItem[]
-  maintenances Maintenance[]
+model CustomerProduct {
+  id              Int         @id @default(autoincrement())
+  serialNumber    String      @unique
+  internalControl String
+  tecnoControl    String
+  productId       Int
+  product         Product     @relation(fields: [productId], references: [id])
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  orderItems      OrderItem[]
+  customerId      Int
+  customer        Customer    @relation(fields: [customerId], references: [id])
 }
 
 model Order {
-  id           Int         @id @default(autoincrement())
-  customerId   Int
-  observations String?
-  customer     Customer    @relation(fields: [customerId], references: [id])
-  userId       Int
-  user         User        @relation(fields: [userId], references: [id])
-  date         DateTime    @default(now())
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
-  orderItems   OrderItem[]
+  id                   Int         @id @default(autoincrement())
+  customerId           Int
+  customer             Customer    @relation(fields: [customerId], references: [id])
+  userId               Int
+  user                 User        @relation(fields: [userId], references: [id])
+  observationsEngineer String?
+  observationsCustomer String?
+  serviceType          ServiceType
+  reportType           ReportType
+  status               OrderStatus
+  createdAt            DateTime    @default(now())
+  updatedAt            DateTime    @updatedAt
+  orderItems           OrderItem[]
 }
 
 model OrderItem {
   id                Int             @id @default(autoincrement())
   orderId           Int
   order             Order           @relation(fields: [orderId], references: [id])
-  productInstanceId Int
-  productInstance   ProductInstance @relation(fields: [productInstanceId], references: [id])
+  customerProductId Int
+  customerProduct   CustomerProduct @relation(fields: [customerProductId], references: [id])
   observations      String?
   createdAt         DateTime        @default(now())
   updatedAt         DateTime        @updatedAt
 
-  @@unique([orderId, productInstanceId])
-}
-
-model Maintenance {
-  id                Int             @id @default(autoincrement())
-  productInstanceId Int
-  productInstance   ProductInstance @relation(fields: [productInstanceId], references: [id])
-  date              DateTime        @default(now())
-  details           String
-  createdAt         DateTime        @default(now())
-  updatedAt         DateTime        @updatedAt
-  Product           Product?        @relation(fields: [productId], references: [id])
-  productId         Int?
+  @@unique([orderId, customerProductId])
 }

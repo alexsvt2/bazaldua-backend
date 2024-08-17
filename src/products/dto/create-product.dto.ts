@@ -2,6 +2,8 @@ import { Prisma } from '@prisma/client';
 import { IsString } from 'class-validator';
 
 export class CreateProductDto implements Prisma.ProductCreateInput {
+  
+
   @IsString()
   model: string;
 
@@ -10,6 +12,9 @@ export class CreateProductDto implements Prisma.ProductCreateInput {
 
   @IsString()
   description: string;
+
+  @IsString()
+  brand: string;
 
   // updatedAt: Date | string;
   //
