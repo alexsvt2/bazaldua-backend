@@ -7,6 +7,84 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String
+  password  String
+  role      Role
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  reports   Report[]
+}
+
+model Customer {
+  id               Int               @id @default(autoincrement())
+  name             String
+  userId           String
+  email            String            @unique
+  phone            String
+  address          String
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  customerProducts CustomerProduct[]
+  reports          Report[]
+}
+
+model Product {
+  id               Int               @id @default(autoincrement())
+  name             String
+  brand            String
+  model            String
+  description      String
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  customerProducts CustomerProduct[]
+}
+
+model CustomerProduct {
+  id              Int          @id @default(autoincrement())
+  serialNumber    String       @unique
+  internalControl String
+  tecnoControl    String
+  productId       Int
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+  customerId      Int
+  customer        Customer     @relation(fields: [customerId], references: [id])
+  product         Product      @relation(fields: [productId], references: [id])
+  reportItems     ReportItem[]
+}
+
+model Report {
+  id                   Int          @id @default(autoincrement())
+  customerId           Int
+  userId               Int
+  observationsEngineer String?
+  observationsCustomer String?
+  serviceType          ServiceType
+  reportType           ReportType
+  status               ReportStatus
+  createdAt            DateTime     @default(now())
+  updatedAt            DateTime     @updatedAt
+  customer             Customer     @relation(fields: [customerId], references: [id])
+  user                 User         @relation(fields: [userId], references: [id])
+  reportItems          ReportItem[]
+}
+
+model ReportItem {
+  id                Int             @id @default(autoincrement())
+  reportId          Int
+  customerProductId Int
+  observations      String?
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  customerProduct   CustomerProduct @relation(fields: [customerProductId], references: [id])
+  report            Report          @relation(fields: [reportId], references: [id])
+
+  @@unique([reportId, customerProductId])
+}
+
 enum Role {
   ADMIN
   TECHNICIAN
@@ -33,87 +111,9 @@ enum ReportType {
   INVOICABLE
 }
 
-enum OrderStatus {
+enum ReportStatus {
   PENDING
   IN_PROGRESS
   DELIVERED
   CANCELED
-}
-
-model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  name      String
-  password  String
-  role      Role
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  orders    Order[]
-}
-
-model Customer {
-  id               Int               @id @default(autoincrement())
-  name             String
-  userId           String // Which user registered the customer
-  email            String            @unique
-  phone            String
-  address          String
-  createdAt        DateTime          @default(now())
-  updatedAt        DateTime          @updatedAt
-  orders           Order[]
-  customerProducts CustomerProduct[]
-}
-
-model Product {
-  id               Int               @id @default(autoincrement())
-  name             String // Equipo- Nombre
-  brand            String // Marca
-  model            String // Axio Lab A1
-  description      String
-  createdAt        DateTime          @default(now())
-  updatedAt        DateTime          @updatedAt
-  customerProducts CustomerProduct[]
-}
-
-model CustomerProduct {
-  id              Int         @id @default(autoincrement())
-  serialNumber    String      @unique
-  internalControl String
-  tecnoControl    String
-  productId       Int
-  product         Product     @relation(fields: [productId], references: [id])
-  createdAt       DateTime    @default(now())
-  updatedAt       DateTime    @updatedAt
-  orderItems      OrderItem[]
-  customerId      Int
-  customer        Customer    @relation(fields: [customerId], references: [id])
-}
-
-model Order {
-  id                   Int         @id @default(autoincrement())
-  customerId           Int
-  customer             Customer    @relation(fields: [customerId], references: [id])
-  userId               Int
-  user                 User        @relation(fields: [userId], references: [id])
-  observationsEngineer String?
-  observationsCustomer String?
-  serviceType          ServiceType
-  reportType           ReportType
-  status               OrderStatus
-  createdAt            DateTime    @default(now())
-  updatedAt            DateTime    @updatedAt
-  orderItems           OrderItem[]
-}
-
-model OrderItem {
-  id                Int             @id @default(autoincrement())
-  orderId           Int
-  order             Order           @relation(fields: [orderId], references: [id])
-  customerProductId Int
-  customerProduct   CustomerProduct @relation(fields: [customerProductId], references: [id])
-  observations      String?
-  createdAt         DateTime        @default(now())
-  updatedAt         DateTime        @updatedAt
-
-  @@unique([orderId, customerProductId])
 }

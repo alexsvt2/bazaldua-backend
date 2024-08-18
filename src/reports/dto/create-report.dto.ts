@@ -1,16 +1,16 @@
 import { $Enums, Prisma } from '@prisma/client';
 
-export class CreateOrderDto implements Prisma.OrderCreateInput {
+export class CreateReportDto implements Prisma.ReportCreateInput {
   observationsEngineer?: string;
   observationsCustomer?: string;
   serviceType: $Enums.ServiceType;
   reportType: $Enums.ReportType;
-  status: $Enums.OrderStatus;
+  status: $Enums.ReportStatus;
   date?: string | Date;
   observations?: string;
   createdAt?: string | Date;
   updatedAt?: string | Date;
-  customer: Prisma.CustomerCreateNestedOneWithoutOrdersInput;
-  user: Prisma.UserCreateNestedOneWithoutOrdersInput;
-  orderItems?: Prisma.OrderItemCreateNestedManyWithoutOrderInput;
+  customer: Prisma.CustomerCreateNestedOneWithoutReportsInput;
+  user: Prisma.UserCreateNestedOneWithoutReportsInput;
+  reportItems?: Prisma.ReportItemCreateNestedManyWithoutReportInput;
 }

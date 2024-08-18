@@ -16,6 +16,7 @@ export class CreateCustomerDto implements Prisma.CustomerCreateInput {
   userId: string;
   createdAt?: string | Date;
   updatedAt?: string | Date;
-  orders?: Prisma.OrderCreateNestedManyWithoutCustomerInput;
+  reports?: Prisma.ReportCreateNestedManyWithoutCustomerInput;
+  // reports?: Prisma.ReportCreateNestedManyWithoutCustomerInput;
   customerProducts?: Prisma.CustomerProductCreateNestedManyWithoutCustomerInput;
 }
