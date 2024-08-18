@@ -49,7 +49,7 @@ export class CustomerProductsService {
         id: id,
       },
       include: {
-        orderItems: true,
+        reportItems: true,
       },
     });
   }
@@ -70,7 +70,7 @@ export class CustomerProductsService {
       include: {
         product: true,
         customer: true,
-        orderItems: true,
+        reportItems: true,
       },
     });
   }

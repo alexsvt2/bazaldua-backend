@@ -91,8 +91,8 @@ async function main() {
     },
   });
 
-  // Create orders
-  const order1 = await prisma.order.create({
+  // Create reports
+  const report1 = await prisma.report.create({
     data: {
       customer: {
         connect: { id: customer1.id },
@@ -108,7 +108,7 @@ async function main() {
     },
   });
 
-  const order2 = await prisma.order.create({
+  const report2 = await prisma.report.create({
     data: {
       customer: {
         connect: { id: customer2.id },
@@ -124,11 +124,11 @@ async function main() {
     },
   });
 
-  // Create order items
-  await prisma.orderItem.create({
+  // Create report items
+  await prisma.reportItem.create({
     data: {
-      order: {
-        connect: { id: order1.id },
+      report: {
+        connect: { id: report1.id },
       },
       customerProduct: {
         connect: { id: customerProduct1.id },
@@ -137,10 +137,10 @@ async function main() {
     },
   });
 
-  await prisma.orderItem.create({
+  await prisma.reportItem.create({
     data: {
-      order: {
-        connect: { id: order2.id },
+      report: {
+        connect: { id: report2.id },
       },
       customerProduct: {
         connect: { id: customerProduct2.id },
