@@ -1,8 +1,13 @@
 import { PrismaClient } from '@prisma/client';
+// import * as bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();
 
 async function main() {
+  // Hash passwords
+  // const adminPassword = await bcrypt.hash('securepassword', 10);
+  // const techPassword = await bcrypt.hash('securepassword', 10);
+
   // Create users
   const user1 = await prisma.user.create({
     data: {
@@ -148,11 +153,13 @@ async function main() {
       observations: 'Product requires calibration.',
     },
   });
+
+  console.log('Seed data created successfully.');
 }
 
 main()
   .catch((e) => {
-    console.error(e);
+    console.error('Error while seeding data:', e);
     process.exit(1);
   })
   .finally(async () => {

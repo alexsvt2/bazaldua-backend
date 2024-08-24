@@ -1,26 +1,67 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { CreateReportDto } from './dto/create-report.dto';
 import { UpdateReportDto } from './dto/update-report.dto';
-import { PrismaService } from 'nestjs-prisma';
+import { CustomPrismaService, PrismaService } from 'nestjs-prisma';
+import { ExtendedPrismaClient } from 'src/prisma.extension';
 
 @Injectable()
 export class ReportsService {
-  constructor(private prismaService: PrismaService) {}
+  constructor(    @Inject('PrismaService')
+  private prismaService: CustomPrismaService<ExtendedPrismaClient>,) {}
 
-  create(createReportDto: CreateReportDto) {
-    return this.prismaService.report.create({
+  // create(createReportDto: CreateReportDto) {
+  //   return this.prismaService.client.report.create({
+  //     data: {
+  //       ...createReportDto,
+  //     },
+  //   });
+  // }
+
+  // create(createReportDto: any) {
+  //   return this.prismaService.client.report.create({
+  //     data: {
+  //       customerId: createReportDto.customerId,
+  //       userId: createReportDto.userId,
+  //       observationsEngineer: createReportDto.observationsEngineer,
+  //       observationsCustomer: createReportDto.observationsCustomer,
+  //       serviceType: createReportDto.serviceType,
+  //       reportType: createReportDto.reportType,
+  //       status: createReportDto.status,
+  //       reportItems: {
+  //         create: createReportDto.reportItems.map((item) => ({
+  //           customerProductId: item.customerProductId,
+  //           observations: item.observations,
+  //         })),
+  //       },
+  //     },
+  //   });
+  // }
+  create(createReportDto: any) {
+    return this.prismaService.client.report.create({
       data: {
-        ...createReportDto,
+        customerId: createReportDto.customerId,
+        userId: createReportDto.userId,
+        observationsEngineer: createReportDto.observationsEngineer,
+        observationsCustomer: createReportDto.observationsCustomer,
+        serviceType: createReportDto.serviceType,
+        reportType: createReportDto.reportType,
+        status: createReportDto.status,
+        // reportItems: {
+        //   create: createReportDto.reportItems.map((item) => ({
+        //     customerProductId: item.customerProductId,
+        //     observations: item.observations,
+        //   })),
+        // },
       },
     });
   }
 
   findAll() {
-    return this.prismaService.report.findMany();
+    return this.prismaService.client.report.findMany();
   }
 
   findOne(id: number) {
-    return this.prismaService.report.findUnique({
+    return this.prismaService.client.report.findUnique({
       where: {
         id,
       },
@@ -28,7 +69,7 @@ export class ReportsService {
   }
 
   update(id: number, updateReportDto: UpdateReportDto) {
-    return this.prismaService.report.update({
+    return this.prismaService.client.report.update({
       where: {
         id,
       },
@@ -39,7 +80,7 @@ export class ReportsService {
   }
 
   remove(id: number) {
-    return this.prismaService.report.delete({
+    return this.prismaService.client.report.delete({
       where: {
         id,
       },

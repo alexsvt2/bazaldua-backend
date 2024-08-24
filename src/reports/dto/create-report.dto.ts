@@ -1,6 +1,6 @@
 import { $Enums, Prisma } from '@prisma/client';
 
-export class CreateReportDto implements Prisma.ReportCreateInput {
+export class CreateReportDto {
   observationsEngineer?: string;
   observationsCustomer?: string;
   serviceType: $Enums.ServiceType;

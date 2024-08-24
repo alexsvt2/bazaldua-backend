@@ -1,28 +1,45 @@
-import { Injectable } from '@nestjs/common';
+import { type ExtendedPrismaClient } from 'src/prisma.extension';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { PrismaService } from 'nestjs-prisma';
-// import { CreateCustomerProductDto } from './customer-products/dto/create-customer-product.dto';
-// import { CreateCustomerProductDto } from './dto/create-customer-product';
+
+import { Inject, Injectable } from '@nestjs/common';
+import { CustomPrismaService } from 'nestjs-prisma';
 
 @Injectable()
 export class ProductsService {
-  constructor(private prismaService: PrismaService) {}
+  constructor(
+    @Inject('PrismaService')
+    private prismaService: CustomPrismaService<ExtendedPrismaClient>,
+  ) {}
 
   create(createProductDto: CreateProductDto) {
-    return this.prismaService.product.create({
+    return this.prismaService.client.product.create({
       data: {
         ...createProductDto,
       },
     });
   }
 
-  findAll() {
-    return this.prismaService.product.findMany();
+  async findAll() {
+    // TODO: App Pagination Parameters
+    // return this.prismaService.client.product.findMany();
+
+    const [products, meta] = await this.prismaService.client.product
+      .paginate()
+      .withPages({
+        limit: 2,
+        page: 1,
+        includePageCounts: true,
+      });
+
+    return {
+      products,
+      meta,
+    };
   }
 
   findOne(id: number) {
-    return this.prismaService.product.findUnique({
+    return this.prismaService.client.product.findUnique({
       where: {
         id,
       },
@@ -30,7 +47,7 @@ export class ProductsService {
   }
 
   update(id: number, updateProductDto: UpdateProductDto) {
-    return this.prismaService.product.update({
+    return this.prismaService.client.product.update({
       where: {
         id,
       },
@@ -41,7 +58,7 @@ export class ProductsService {
   }
 
   remove(id: number) {
-    return this.prismaService.product.delete({
+    return this.prismaService.client.product.delete({
       where: {
         id,
       },

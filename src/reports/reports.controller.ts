@@ -16,7 +16,7 @@ export class ReportsController {
   constructor(private readonly reportsService: ReportsService) {}
 
   @Post()
-  create(@Body() createReportDto: CreateReportDto) {
+  create(@Body() createReportDto: any) {
     return this.reportsService.create(createReportDto);
   }
 

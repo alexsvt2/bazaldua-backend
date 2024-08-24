@@ -1,33 +1,16 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { CreateCustomerProductDto } from './dto/create-customer-product.dto';
 // import { UpdateCustomerProductDto } from './dto/update-customer-product.dto';
-import { PrismaService } from 'nestjs-prisma';
+import { CustomPrismaService, PrismaService } from 'nestjs-prisma';
+import { ExtendedPrismaClient } from 'src/prisma.extension';
 
 @Injectable()
 export class CustomerProductsService {
-  constructor(private prismaService: PrismaService) {}
-
-  // create(createCustomerProductDto: CreateCustomerProductDto) {
-  //   return 'This action adds a new customerProduct';
-  // }
-  //
-  // findAll() {
-  //   return `This action returns all customerProducts`;
-  // }
-  //
-  // findOne(id: number) {
-  //   return `This action returns a #${id} customerProduct`;
-  // }
-  //
-  // update(id: number, updateCustomerProductDto: UpdateCustomerProductDto) {
-  //   return `This action updates a #${id} customerProduct`;
-  // }
-  //
-  // remove(id: number) {
-  //   return `This action removes a #${id} customerProduct`;
-  // }
+  constructor(@Inject('PrismaService')
+  private prismaService: CustomPrismaService<ExtendedPrismaClient>) {}
+  
   create(createProductInstanceDto: CreateCustomerProductDto) {
-    return this.prismaService.customerProduct.create({
+    return this.prismaService.client.customerProduct.create({
       data: {
         ...createProductInstanceDto,
       },
@@ -35,7 +18,7 @@ export class CustomerProductsService {
   }
 
   findAllProductInstances() {
-    return this.prismaService.customerProduct.findMany({
+    return this.prismaService.client.customerProduct.findMany({
       include: {
         product: true,
         customer: true,
@@ -44,7 +27,7 @@ export class CustomerProductsService {
   }
 
   findOne(id: number) {
-    return this.prismaService.customerProduct.findMany({
+    return this.prismaService.client.customerProduct.findMany({
       where: {
         id: id,
       },
@@ -55,7 +38,7 @@ export class CustomerProductsService {
   }
 
   findProductInstancesByProductId(id: number) {
-    return this.prismaService.customerProduct.findMany({
+    return this.prismaService.client.customerProduct.findMany({
       where: {
         productId: id,
       },
@@ -63,7 +46,7 @@ export class CustomerProductsService {
   }
 
   findProductInstancesByClientId(id: number) {
-    return this.prismaService.customerProduct.findMany({
+    return this.prismaService.client.customerProduct.findMany({
       where: {
         customerId: id,
       },
