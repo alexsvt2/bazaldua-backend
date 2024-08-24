@@ -56,8 +56,13 @@ export class ReportsService {
     });
   }
 
-  findAll() {
-    return this.prismaService.client.report.findMany();
+  async findAll() {
+    const [items, meta] = await this.prismaService.client.report.paginate().withPages({});
+
+    return {
+      items,
+      meta,
+    }
   }
 
   findOne(id: number) {

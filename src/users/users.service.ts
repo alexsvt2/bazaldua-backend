@@ -18,7 +18,7 @@ export class UsersService {
   }
 
   findAll() {
-    return this.prismaService.client.user.findMany();
+    return this.prismaService.client.user.paginate().withPages({});
   }
 
   findOne(id: number) {
@@ -47,6 +47,4 @@ export class UsersService {
       },
     });
   }
-
-  // TODO: Add Change User Status Should Receive a Boolean and the UserId
 }

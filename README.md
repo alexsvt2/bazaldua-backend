@@ -63,6 +63,12 @@ $ npm run test:cov
 Helpful for Nestjs Configuration
 https://github.com/notiz-dev/nestjs-prisma
 
+
+
+https://www.npmjs.com/package/nestjs-paginate
+http://localhost:3000/cats?limit=5&page=2&sortBy=color:DESC&search=i&filter.age=$gte:3&select=id,name,color,age
+
+
 ```bash
 # install nestjs-prisma
 $ npm install nestjs-prisma

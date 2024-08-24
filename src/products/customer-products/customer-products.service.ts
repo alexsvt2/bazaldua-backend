@@ -18,12 +18,13 @@ export class CustomerProductsService {
   }
 
   findAllProductInstances() {
-    return this.prismaService.client.customerProduct.findMany({
+    return this.prismaService.client.customerProduct.paginate({
       include: {
         product: true,
         customer: true,
-      },
-    });
+        reportItems: true,
+      }
+    }).withPages({})
   }
 
   findOne(id: number) {

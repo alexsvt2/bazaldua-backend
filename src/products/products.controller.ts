@@ -6,10 +6,12 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { PaginationQueryDto } from 'src/_dto/pagination.dto';
 // import { CreateCustomerProductDto } from './customer-products/dto/create-customer-product.dto';
 // import { CreateCustomerProductDto as CreateCustomerProductDto } from './dto/create-customer-product';
 
@@ -23,8 +25,15 @@ export class ProductsController {
   }
 
   @Get()
-  findAll() {
-    return this.productsService.findAll();
+  findAll(@Query() query: PaginationQueryDto) {
+    const { page = '1', limit = '10' } = query;
+    const pageNumber = parseInt(page, 10);
+    const limitNumber = parseInt(limit, 10);
+
+    return this.productsService.findAll({
+      page: pageNumber,
+      limit: limitNumber,
+    });
   }
 
   @Get(':id')
