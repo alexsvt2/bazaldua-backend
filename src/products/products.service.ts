@@ -9,7 +9,7 @@ export class ProductsService {
   constructor(
     @Inject('PrismaService')
     private prismaService: CustomPrismaService<ExtendedPrismaClient>,
-  ) { }
+  ) {}
 
   create(createProductDto: CreateProductDto) {
     return this.prismaService.client.product.create({
@@ -20,19 +20,14 @@ export class ProductsService {
   }
 
   async findAll(paginationQuery: { page: number; limit: number }) {
-    const [items, meta] = await this.prismaService.client.product.paginate({
-      // The Missing Gem
-      // where: {
-      //   brand: {
-      //     contains: 'Brand A',
-      //   }
-      // }
-    }).withPages({})
+    const [items, meta] = await this.prismaService.client.product
+      .paginate()
+      .withPages({});
 
     return {
       items,
       meta,
-    }
+    };
   }
 
   findOne(id: number) {

@@ -17,14 +17,12 @@ export class CustomerProductsService {
     });
   }
 
-  findAllProductInstances() {
-    return this.prismaService.client.customerProduct.paginate({
-      include: {
-        product: true,
-        customer: true,
-        reportItems: true,
-      }
-    }).withPages({})
+  async findAllProductInstances() {
+    const [items, meta] = await this.prismaService.client.customerProduct.paginate().withPages({});
+    return {
+      items,
+      meta,
+    }
   }
 
   findOne(id: number) {

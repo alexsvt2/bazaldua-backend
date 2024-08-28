@@ -11,8 +11,11 @@ export class CustomersService {
   ) { }
 
   create(createCustomerDto: CreateCustomerDto) {
+    console.log('createCustomerDto', createCustomerDto);
     return this.prismaService.client.customer.create({
+      // Fix This Issue Because is Wrong
       data: {
+        userId: '1',
         ...createCustomerDto,
       },
     });

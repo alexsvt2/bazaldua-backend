@@ -8,34 +8,7 @@ import { ExtendedPrismaClient } from 'src/prisma.extension';
 export class ReportsService {
   constructor(    @Inject('PrismaService')
   private prismaService: CustomPrismaService<ExtendedPrismaClient>,) {}
-
-  // create(createReportDto: CreateReportDto) {
-  //   return this.prismaService.client.report.create({
-  //     data: {
-  //       ...createReportDto,
-  //     },
-  //   });
-  // }
-
-  // create(createReportDto: any) {
-  //   return this.prismaService.client.report.create({
-  //     data: {
-  //       customerId: createReportDto.customerId,
-  //       userId: createReportDto.userId,
-  //       observationsEngineer: createReportDto.observationsEngineer,
-  //       observationsCustomer: createReportDto.observationsCustomer,
-  //       serviceType: createReportDto.serviceType,
-  //       reportType: createReportDto.reportType,
-  //       status: createReportDto.status,
-  //       reportItems: {
-  //         create: createReportDto.reportItems.map((item) => ({
-  //           customerProductId: item.customerProductId,
-  //           observations: item.observations,
-  //         })),
-  //       },
-  //     },
-  //   });
-  // }
+  
   create(createReportDto: any) {
     return this.prismaService.client.report.create({
       data: {
@@ -46,12 +19,12 @@ export class ReportsService {
         serviceType: createReportDto.serviceType,
         reportType: createReportDto.reportType,
         status: createReportDto.status,
-        // reportItems: {
-        //   create: createReportDto.reportItems.map((item) => ({
-        //     customerProductId: item.customerProductId,
-        //     observations: item.observations,
-        //   })),
-        // },
+        reportItems: {
+          create: createReportDto.reportItems.map((item) => ({
+            customerProductId: item.customerProductId,
+            observations: item.observations,
+          })),
+        },
       },
     });
   }
@@ -84,11 +57,12 @@ export class ReportsService {
     });
   }
 
-  remove(id: number) {
+  async remove(id: number) {
+    await this.prismaService.client.reportItem.deleteMany({
+      where: { reportId: id },
+    });
     return this.prismaService.client.report.delete({
-      where: {
-        id,
-      },
+      where: { id: id },
     });
   }
 }
