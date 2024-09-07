@@ -1,32 +1,36 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
-import { CustomPrismaService, PrismaService } from 'nestjs-prisma';
+import { CustomPrismaService } from 'nestjs-prisma';
 import { ExtendedPrismaClient } from 'src/prisma.extension';
 
 @Injectable()
 export class CustomersService {
-  constructor(@Inject('PrismaService')
-  private prismaService: CustomPrismaService<ExtendedPrismaClient>
-  ) { }
+  constructor(
+    @Inject('PrismaService')
+    private prismaService: CustomPrismaService<ExtendedPrismaClient>,
+  ) {}
 
   create(createCustomerDto: CreateCustomerDto) {
     console.log('createCustomerDto', createCustomerDto);
+
     return this.prismaService.client.customer.create({
       // Fix This Issue Because is Wrong
       data: {
-        userId: '1',
+        createdByUserId: createCustomerDto.createdByUserId,
         ...createCustomerDto,
       },
     });
   }
 
   async findAll() {
-    const [items, meta] = await this.prismaService.client.customer.paginate().withPages({});
+    const [items, meta] = await this.prismaService.client.customer
+      .paginate()
+      .withPages({});
     return {
       items,
       meta,
-    }
+    };
   }
 
   findOne(id: number) {

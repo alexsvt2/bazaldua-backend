@@ -6,9 +6,11 @@ import { ExtendedPrismaClient } from 'src/prisma.extension';
 
 @Injectable()
 export class ReportsService {
-  constructor(    @Inject('PrismaService')
-  private prismaService: CustomPrismaService<ExtendedPrismaClient>,) {}
-  
+  constructor(
+    @Inject('PrismaService')
+    private prismaService: CustomPrismaService<ExtendedPrismaClient>,
+  ) {}
+
   create(createReportDto: any) {
     return this.prismaService.client.report.create({
       data: {
@@ -30,12 +32,18 @@ export class ReportsService {
   }
 
   async findAll() {
-    const [items, meta] = await this.prismaService.client.report.paginate().withPages({});
+    const [items, meta] = await this.prismaService.client.report
+      .paginate({
+        include: {
+          customer: true,
+        },
+      })
+      .withPages({});
 
     return {
       items,
       meta,
-    }
+    };
   }
 
   findOne(id: number) {

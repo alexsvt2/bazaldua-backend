@@ -1,14 +1,7 @@
 import { PrismaClient } from '@prisma/client';
-// import * as bcrypt from 'bcrypt';
-
 const prisma = new PrismaClient();
 
 async function main() {
-  // Hash passwords
-  // const adminPassword = await bcrypt.hash('securepassword', 10);
-  // const techPassword = await bcrypt.hash('securepassword', 10);
-
-  // Create users
   const user1 = await prisma.user.create({
     data: {
       email: 'admin@example.com',
@@ -21,147 +14,122 @@ async function main() {
   const user2 = await prisma.user.create({
     data: {
       email: 'tech@example.com',
-      name: 'Tech User',
+      name: 'Technician User',
       password: 'securepassword',
       role: 'TECHNICIAN',
     },
   });
 
-  // Create customers
+  // Create Customers
   const customer1 = await prisma.customer.create({
     data: {
       name: 'Customer One',
-      userId: user1.id.toString(),
+      createdByUserId: user1.id, // Updated to createdByUserId
       email: 'customer1@example.com',
       phone: '123-456-7890',
-      address: '123 Main St, City, Country',
+      address: '123 Main St',
     },
   });
 
   const customer2 = await prisma.customer.create({
     data: {
       name: 'Customer Two',
-      userId: user2.id.toString(),
+      createdByUserId: user2.id, // Updated to createdByUserId
       email: 'customer2@example.com',
       phone: '098-765-4321',
-      address: '456 Secondary St, City, Country',
+      address: '456 Elm St',
     },
   });
 
-  // Create products
+  // Create Products
   const product1 = await prisma.product.create({
     data: {
-      name: 'Microscope',
+      name: 'Product One',
       brand: 'Brand A',
       model: 'Model X',
-      description: 'A high-quality microscope for scientific use.',
+      description: 'Description for product one.',
     },
   });
 
   const product2 = await prisma.product.create({
     data: {
-      name: 'Telescope',
+      name: 'Product Two',
       brand: 'Brand B',
       model: 'Model Y',
-      description: 'A powerful telescope for astronomical observations.',
+      description: 'Description for product two.',
     },
   });
 
-  // Create customer products
+  // Create Customer Products
   const customerProduct1 = await prisma.customerProduct.create({
     data: {
-      serialNumber: '12345',
-      internalControl: 'IC-001',
-      tecnoControl: 'TC-001',
-      product: {
-        connect: { id: product1.id },
-      },
-      customer: {
-        connect: { id: customer1.id },
-      },
+      serialNumber: 'SN12345',
+      internalControl: 'IC123',
+      tecnoControl: 'TC123',
+      productId: product1.id,
+      customerId: customer1.id,
     },
   });
 
   const customerProduct2 = await prisma.customerProduct.create({
     data: {
-      serialNumber: '67890',
-      internalControl: 'IC-002',
-      tecnoControl: 'TC-002',
-      product: {
-        connect: { id: product2.id },
-      },
-      customer: {
-        connect: { id: customer2.id },
-      },
+      serialNumber: 'SN67890',
+      internalControl: 'IC456',
+      tecnoControl: 'TC456',
+      productId: product2.id,
+      customerId: customer2.id,
     },
   });
 
-  // Create reports
+  // Create Reports
   const report1 = await prisma.report.create({
     data: {
-      customer: {
-        connect: { id: customer1.id },
-      },
-      user: {
-        connect: { id: user1.id },
-      },
+      customerId: customer1.id,
+      userId: user1.id,
+      observationsEngineer: 'Engineer observations for report one.',
+      observationsCustomer: 'Customer observations for report one.',
       serviceType: 'PREVENTIVE',
       reportType: 'WARRANTY',
       status: 'PENDING',
-      observationsEngineer: 'Initial checkup required.',
-      observationsCustomer: 'Please ensure careful handling.',
     },
   });
 
   const report2 = await prisma.report.create({
     data: {
-      customer: {
-        connect: { id: customer2.id },
-      },
-      user: {
-        connect: { id: user2.id },
-      },
+      customerId: customer2.id,
+      userId: user2.id,
+      observationsEngineer: 'Engineer observations for report two.',
+      observationsCustomer: 'Customer observations for report two.',
       serviceType: 'CORRECTIVE',
       reportType: 'INVOICABLE',
       status: 'IN_PROGRESS',
-      observationsEngineer: 'Part replacement needed.',
-      observationsCustomer: 'Speedy service requested.',
     },
   });
 
-  // Create report items
+  // Create Report Items
   await prisma.reportItem.create({
     data: {
-      report: {
-        connect: { id: report1.id },
-      },
-      customerProduct: {
-        connect: { id: customerProduct1.id },
-      },
-      observations: 'Product requires cleaning.',
+      reportId: report1.id,
+      customerProductId: customerProduct1.id,
+      observations: 'Observation for report item one.',
     },
   });
 
   await prisma.reportItem.create({
     data: {
-      report: {
-        connect: { id: report2.id },
-      },
-      customerProduct: {
-        connect: { id: customerProduct2.id },
-      },
-      observations: 'Product requires calibration.',
+      reportId: report2.id,
+      customerProductId: customerProduct2.id,
+      observations: 'Observation for report item two.',
     },
   });
-
-  console.log('Seed data created successfully.');
 }
 
 main()
-  .catch((e) => {
-    console.error('Error while seeding data:', e);
-    process.exit(1);
-  })
-  .finally(async () => {
+  .then(async () => {
     await prisma.$disconnect();
+  })
+  .catch(async (e) => {
+    console.error(e);
+    await prisma.$disconnect();
+    process.exit(1);
   });

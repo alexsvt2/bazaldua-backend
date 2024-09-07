@@ -6,9 +6,11 @@ import { ExtendedPrismaClient } from 'src/prisma.extension';
 
 @Injectable()
 export class CustomerProductsService {
-  constructor(@Inject('PrismaService')
-  private prismaService: CustomPrismaService<ExtendedPrismaClient>) {}
-  
+  constructor(
+    @Inject('PrismaService')
+    private prismaService: CustomPrismaService<ExtendedPrismaClient>,
+  ) {}
+
   create(createProductInstanceDto: CreateCustomerProductDto) {
     return this.prismaService.client.customerProduct.create({
       data: {
@@ -18,11 +20,13 @@ export class CustomerProductsService {
   }
 
   async findAllProductInstances() {
-    const [items, meta] = await this.prismaService.client.customerProduct.paginate().withPages({});
+    const [items, meta] = await this.prismaService.client.customerProduct
+      .paginate()
+      .withPages({});
     return {
       items,
       meta,
-    }
+    };
   }
 
   findOne(id: number) {
@@ -40,6 +44,9 @@ export class CustomerProductsService {
     return this.prismaService.client.customerProduct.findMany({
       where: {
         productId: id,
+      },
+      include: {
+        product: true,
       },
     });
   }

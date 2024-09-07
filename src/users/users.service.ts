@@ -1,13 +1,15 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { CustomPrismaService, PrismaService } from 'nestjs-prisma';
+import { CustomPrismaService } from 'nestjs-prisma';
 import { ExtendedPrismaClient } from 'src/prisma.extension';
 
 @Injectable()
 export class UsersService {
-  constructor(    @Inject('PrismaService')
-  private prismaService: CustomPrismaService<ExtendedPrismaClient>,) {}
+  constructor(
+    @Inject('PrismaService')
+    private prismaService: CustomPrismaService<ExtendedPrismaClient>,
+  ) {}
 
   create(createUserDto: CreateUserDto) {
     return this.prismaService.client.user.create({

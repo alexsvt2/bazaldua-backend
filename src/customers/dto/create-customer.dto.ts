@@ -1,6 +1,6 @@
 import { Prisma } from '@prisma/client';
 import { IsString } from 'class-validator';
-export class CreateCustomerDto implements Prisma.CustomerCreateInput {
+export class CreateCustomerDto {
   @IsString()
   name: string;
 
@@ -13,7 +13,7 @@ export class CreateCustomerDto implements Prisma.CustomerCreateInput {
   @IsString()
   phone: string;
 
-  userId: string;
+  createdByUserId: number;
   createdAt?: string | Date;
   updatedAt?: string | Date;
   reports?: Prisma.ReportCreateNestedManyWithoutCustomerInput;
