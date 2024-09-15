@@ -8,26 +8,26 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
+  id        Int        @id @default(autoincrement())
+  email     String     @unique
   name      String
   password  String
   role      Role
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  reports   Report[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
   Customer  Customer[]
+  reports   Report[]
 }
 
 model Customer {
   id               Int               @id @default(autoincrement())
   name             String
-  createdByUserId  Int
   email            String            @unique
   phone            String
   address          String
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @updatedAt
+  createdByUserId  Int
   createdBy        User              @relation(fields: [createdByUserId], references: [id])
   customerProducts CustomerProduct[]
   reports          Report[]
@@ -110,7 +110,7 @@ enum ReportType {
   WARRANTY
   CONTRACT
   NO_CHARGE
-  INVOICABLE
+  BILLABLE
 }
 
 enum ReportStatus {

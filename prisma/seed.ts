@@ -101,7 +101,7 @@ async function main() {
       observationsEngineer: 'Engineer observations for report two.',
       observationsCustomer: 'Customer observations for report two.',
       serviceType: 'CORRECTIVE',
-      reportType: 'INVOICABLE',
+      reportType: 'BILLABLE',
       status: 'IN_PROGRESS',
     },
   });

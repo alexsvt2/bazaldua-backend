@@ -8,7 +8,6 @@ import { ReportsModule } from './reports/reportsModule';
 import { PrismaModule } from 'nestjs-prisma';
 import { CustomPrismaModule } from 'nestjs-prisma';
 import { extendedPrismaClient } from './prisma.extension';
-import { ExtendedPrismaConfigService } from './extent-prisma-config.service';
 
 @Module({
   imports: [
