@@ -1,20 +1,24 @@
 import { Prisma } from '@prisma/client';
-import { IsString } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 
-export class CreateProductDto implements Prisma.ProductCreateInput {
+export class CreateProductDto {
+  // export class CreateProductDto implements Prisma.ProductCreateInput {
   
 
   @IsString()
-  model: string;
+  @IsOptional()
+  model?: string;
 
   @IsString()
   name: string;
 
   @IsString()
-  description: string;
+  @IsOptional()
+  description?: string;
 
   @IsString()
-  brand: string;
+  @IsOptional()
+  brand?: string;
 
   // updatedAt: Date | string;
   //
