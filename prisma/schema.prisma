@@ -36,12 +36,36 @@ model Customer {
 model Product {
   id               Int               @id @default(autoincrement())
   name             String
-  brand            String
-  model            String
+  brand            Brand?            @relation(fields: [brandId], references: [id])
+  brandId          Int?
+  model            Model?            @relation(fields: [modelId], references: [id])
+  modelId           Int?
+  productTypes     ProductTypes[]
   description      String
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @updatedAt
   customerProducts CustomerProduct[]
+}
+
+model Brand {
+  id   Int    @id @default(autoincrement())
+  name String
+  code String
+  products Product[]
+}
+
+model Model {
+  id        Int      @id @default(autoincrement())
+  name      String
+  code      String
+  Product   Product[]
+  }
+
+model ProductTypes {
+  id          Int      @id @default(autoincrement())
+  description String
+  Product     Product? @relation(fields: [productId], references: [id])
+  productId   Int?
 }
 
 model CustomerProduct {
